@@ -1,0 +1,31 @@
+[project]
+name = "h2pcontrol-server-template"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "grpcio>=1.80.0",
+    "beyer-labs-h2pcontrol-grpc-python>=1.80.0.1.20260406165239",
+    "beyer-labs-h2pcontrol-protocolbuffers-pyi>=34.1.0.1.20260406165239",
+    "beyer-labs-h2pcontrol-protocolbuffers-python>=34.1.0.1.20260406165239",
+    "h2pcontrol-sdk",
+]
+
+[dependency-groups]
+dev = [
+    "ruff==0.15.11",
+    "pyright>=1.1.0",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[[tool.uv.index]]
+url = "https://buf.build/gen/python"
+
+[tool.uv.sources]
+h2pcontrol-sdk = { git = "https://github.com/torbenfreise/h2pcontrol-sdk", rev = "0.1.1" }
+
+
