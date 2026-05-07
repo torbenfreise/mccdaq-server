@@ -8,6 +8,7 @@ dependencies = [
     "beyer-labs-h2pcontrol-protocolbuffers-pyi>=34.1.0.1.20260406165239",
     "beyer-labs-h2pcontrol-protocolbuffers-python>=34.1.0.1.20260406165239",
     "h2pcontrol-sdk",
+    "mcculw",
 ]
 
 [dependency-groups]

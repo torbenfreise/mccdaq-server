@@ -3,7 +3,7 @@ import logging
 
 from h2pcontrol.sdk import H2PServerConfig
 
-from service import ExampleService
+from service import MccDaqService
 
 logging.basicConfig(
     level=logging.INFO,
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 async def main():
     cfg = H2PServerConfig.load()
-    svc = ExampleService(cfg)
+    svc = MccDaqService(cfg)
     await svc.start()
 
 

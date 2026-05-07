@@ -1,1 +1,1 @@
-from .example import ExampleService as ExampleService
+from .mccdaq import MccDaqService as MccDaqService
