@@ -5,5 +5,4 @@ heartbeat_interval_s = 5
 [service]
 name = "mccdaq-service"
 description = "MCC DAQ h2pcontrol service"
-host = "0.0.0.0"
-port = 50055
+address = "0.0.0.0:50055"
