@@ -83,10 +83,6 @@ class MccDaqService(Server, GoNogoMixin, MccDaqServiceServicer):
         ao_info = daq_dev_info.get_ao_info()
         ao_range = ao_info.supported_ranges[0]
         print('ao range', ao_range)
-        channel = 0
 
-        data_value = ao_range.range_max / 2
-
-        print('Outputting', data_value, 'Volts to channel', channel)
-        ul.v_out(board_num, request.channel, ao_range, data_value)
+        ul.v_out(board_num, request.channel, ao_range, request.volts)
         return AnalogWriteResponse()
