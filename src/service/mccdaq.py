@@ -82,6 +82,7 @@ class MccDaqService(Server, GoNogoMixin, MccDaqServiceServicer):
         daq_dev_info = DaqDeviceInfo(board_num)
         ao_info = daq_dev_info.get_ao_info()
         ao_range = ao_info.supported_ranges[0]
+        print('ao range', ao_range)
         channel = 0
 
         data_value = ao_range.range_max / 2
