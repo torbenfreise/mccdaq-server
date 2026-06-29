@@ -5,4 +5,4 @@ retry_interval_s = 5
 [service]
 name = "mccdaq-service"
 description = "MCC DAQ h2pcontrol service"
-address = "0.0.0.0:50055"
+address = "100.87.99.20:50055"
