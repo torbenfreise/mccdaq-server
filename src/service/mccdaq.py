@@ -15,6 +15,7 @@ from h2pcontrol.mccdaq.v1.mccdaq_pb2 import (
 from h2pcontrol.mccdaq.v1.mccdaq_pb2_grpc import MccDaqServiceServicer
 from h2pcontrol.sdk.server import GoNogoMixin, Server
 from mcculw import ul
+from mcculw.device_info import DaqDeviceInfo
 from mcculw.enums import ULRange
 from mcculw.ul import ULError
 
@@ -78,5 +79,13 @@ class MccDaqService(Server, GoNogoMixin, MccDaqServiceServicer):
             self, request: AnalogWriteRequest, context: grpc.aio.ServicerContext
     ) -> AnalogWriteResponse:
         logger.info("AnalogWrite: channel=%d volts=%f", request.channel, request.volts)
-        ul.v_out(board_num, request.channel, ao_range, request.volts)
+        daq_dev_info = DaqDeviceInfo(board_num)
+        ao_info = daq_dev_info.get_ao_info()
+        ao_range = ao_info.supported_ranges[0]
+        channel = 0
+
+        data_value = ao_range.range_max / 2
+
+        print('Outputting', data_value, 'Volts to channel', channel)
+        ul.v_out(board_num, request.channel, ao_range, data_value)
         return AnalogWriteResponse()
