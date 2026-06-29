@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 board_num = 0
 ai_range = ULRange.BIP2VOLTS
-ao_range = ULRange.UNI10VOLTS
+ao_range = ULRange.BIP10VOLTS
 
 
 def _read_channel(channel: int) -> AnalogSample:
@@ -79,10 +79,5 @@ class MccDaqService(Server, GoNogoMixin, MccDaqServiceServicer):
             self, request: AnalogWriteRequest, context: grpc.aio.ServicerContext
     ) -> AnalogWriteResponse:
         logger.info("AnalogWrite: channel=%d volts=%f", request.channel, request.volts)
-        daq_dev_info = DaqDeviceInfo(board_num)
-        ao_info = daq_dev_info.get_ao_info()
-        ao_range = ao_info.supported_ranges[0]
-        print('ao range', ao_range)
-
         ul.v_out(board_num, request.channel, ao_range, request.volts)
         return AnalogWriteResponse()
