@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 board_num = 0
 ai_range = ULRange.BIP2VOLTS
-ao_range = ULRange.UNI5VOLTS
+ao_range = ULRange.UNI10VOLTS
 
 
 def _read_channel(channel: int) -> AnalogSample:
@@ -58,7 +58,7 @@ class MccDaqService(Server, GoNogoMixin, MccDaqServiceServicer):
         return True, ""
 
     async def AnalogRead(
-        self, request: AnalogReadRequest, context: grpc.aio.ServicerContext
+            self, request: AnalogReadRequest, context: grpc.aio.ServicerContext
     ) -> AnalogReadResponse:
         logger.info("AnalogRead: channel=%d", request.channel)
         return AnalogReadResponse(sample=_read_channel(request.channel))
@@ -75,7 +75,7 @@ class MccDaqService(Server, GoNogoMixin, MccDaqServiceServicer):
             await asyncio.sleep(interval_s)
 
     async def AnalogWrite(
-        self, request: AnalogWriteRequest, context: grpc.aio.ServicerContext
+            self, request: AnalogWriteRequest, context: grpc.aio.ServicerContext
     ) -> AnalogWriteResponse:
         logger.info("AnalogWrite: channel=%d volts=%f", request.channel, request.volts)
         raw_out = ul.from_eng_units(board_num, ao_range, request.volts)
