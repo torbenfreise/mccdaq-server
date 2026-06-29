@@ -78,6 +78,5 @@ class MccDaqService(Server, GoNogoMixin, MccDaqServiceServicer):
             self, request: AnalogWriteRequest, context: grpc.aio.ServicerContext
     ) -> AnalogWriteResponse:
         logger.info("AnalogWrite: channel=%d volts=%f", request.channel, request.volts)
-        raw_out = ul.from_eng_units(board_num, ao_range, request.volts)
-        ul.a_out(board_num, request.channel, ao_range, raw_out)
+        ul.v_out(board_num, request.channel, ao_range, request.volts)
         return AnalogWriteResponse()
