@@ -1,9 +1,9 @@
-# SpinCore PulseBlaster Service
+# MCC DAQ Service
 
-Implementation of a gRPC service for a mcc DAQ card intended for use with h2pcontrol.
+Implementation of a gRPC service for an MCC DAQ card intended for use with h2pcontrol.
 
-This service should be run on a device connected to a MCC DAQ card, and enables
-remote programming via gRPC.
+This service should be run on a device connected to an MCC DAQ card, and enables
+remote analog input and output via gRPC.
 
 Configure the address where the service listens in the [config.toml](config.toml) file.
 
@@ -11,6 +11,8 @@ This project has been adapted from the [h2pcontrol-server-template](https://gith
 
 ## Requirements
 
+- Windows, with the MCC [InstaCal / Universal Library](https://digilent.com/reference/software/instacal/start)
+  installed and the board configured as board 0. The `mcculw` package wraps the Windows-only UL DLL.
 - Python 3.12+
 - [uv](https://docs.astral.sh/uv/)
 

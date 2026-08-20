@@ -1,5 +1,5 @@
 [project]
-name = "h2pcontrol-server-template"
+name = "mccdaq-server"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
@@ -35,7 +35,7 @@ h2pcontrol-sdk = { git = "https://github.com/torbenfreise/h2pcontrol-sdk", rev =
 # The official protocolbuffers-pyi and mypy-protobuf stubs both ship the same
 # *_pb2.pyi paths; whichever installs last wins, which is non-deterministic across
 # machines.
-# We exclude pyi here to ensure  the richer mypy stubs  win deterministically.
+# We exclude pyi here to ensure the richer mypy stubs win deterministically.
 override-dependencies = [
     "protobuf>=7.34.1",
     "beyer-labs-h2pcontrol-protocolbuffers-pyi ; sys_platform == 'no-such-platform'",
