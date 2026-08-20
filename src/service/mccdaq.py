@@ -32,8 +32,6 @@ preferred_ao_range = ULRange.BIP10VOLTS
 
 @dataclass(frozen=True)
 class _BoardCaps:
-    """What the board actually supports, read once at startup."""
-
     product_name: str
     ai_num_chans: int
     ai_resolution: int
@@ -62,8 +60,8 @@ def _probe_board() -> _BoardCaps:
     """
     Query the board's channel counts, resolutions and supported ranges.
 
-    Note that probing the AO ranges writes 0 counts to AO channel 0, so this must only
-    be called at startup, before anything depends on the output state.
+    DaqDeviceInfo probes the AO ranges by writing 0 counts to AO channel 0, so this
+    must only be called before anything depends on the output state.
     """
     info = DaqDeviceInfo(board_num)
     ai_info = info.get_ai_info()
@@ -98,9 +96,6 @@ def _probe_board() -> _BoardCaps:
 
 
 def _ai_input_mode() -> str:
-    """
-    The board's analog input mode, for the startup log.
-    """
     try:
         mode = ul.get_config(InfoType.BOARDINFO, board_num, 0, BoardInfo.ADAIMODE)
         return AnalogInputMode(mode).name
@@ -109,15 +104,14 @@ def _ai_input_mode() -> str:
 
 
 def _read_channel(caps: _BoardCaps, channel: int) -> AnalogSample:
-    # to_eng_units is only defined up to 16 bits; higher-resolution boards need the
-    # 32-bit variants or the counts get scaled against the wrong full-scale value.
+    # to_eng_units is only defined up to 16 bits; above that the counts get scaled
+    # against the wrong full-scale value, so use the 32-bit variants.
     if caps.ai_resolution > 16:
         raw = ul.a_in_32(board_num, channel, caps.ai_range)
         volts = ul.to_eng_units_32(board_num, caps.ai_range, raw)
     else:
         raw = ul.a_in(board_num, channel, caps.ai_range)
         volts = ul.to_eng_units(board_num, caps.ai_range, raw)
-    # Wall-clock, so samples are comparable with timestamps from other services.
     timestamp_us = time.time_ns() // 1000
     logger.debug("analog read", extra={"channel": channel, "volts": volts, "raw": raw})
     return AnalogSample(channel=channel, volts=volts, raw=raw, timestamp_us=timestamp_us)
@@ -127,8 +121,8 @@ class MccDaqService(Server, MccDaqServiceServicer):
     def __init__(self, config):
         super().__init__(config)
         self._caps: _BoardCaps | None = None
-        # The UL is a blocking, non-reentrant C library, so every call runs in a worker
-        # thread behind this lock rather than on the event loop.
+        # The UL is blocking and not reentrant, so every call goes to a worker thread
+        # behind this lock instead of running on the event loop.
         self._ul_lock = asyncio.Lock()
         try:
             self._caps = _probe_board()
@@ -143,7 +137,7 @@ class MccDaqService(Server, MccDaqServiceServicer):
             return await asyncio.to_thread(fn, *args)
 
     async def _board(self, context: grpc.aio.ServicerContext) -> _BoardCaps:
-        """Return the board capabilities, re-probing if startup detection failed."""
+        """Return the board capabilities, re-probing if the startup probe failed."""
         if self._caps is not None:
             return self._caps
         try:
